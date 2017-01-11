@@ -91,6 +91,95 @@ VirtualHost "example.org"
       is where you can do things like enabling the LDAP authentication
       module or enabling SQL storage for user data.</para>
 
+      <para>By default, prosody accepts both encrypted and non-encrypted
+      communications with servers and clients; a better setting is to allow
+      only encrypted communications and force the verification of server
+      certificates.</para>
+
+      <para>Those few servers that don't work with these settings can be
+      whitelisted individually.</para>
+
+      <example xml:id="prosody-cfg-lua">
+        <title><code>prosody.cfg.lua</code> settings for encrypted
+            comunications</title>
+
+        <programlisting format="linespecific">c2s_require_encryption = true
+s2s_secure_auth = true
+s2s_insecure_domains = { "gmail.com" }</programlisting>
+      </example>
+
+      <para>For maximum support for modern clients, including mobiles ones,
+      you can also enable the following modules from the community
+      repository (available in Debian in the package
+      <code>prosody-modules</code> in <code>jessie-backports</code>).</para>
+
+
+  <variablelist>
+      <varlistentry>
+          <term><code>mod_carbons</code> (XEP-0280)</term>
+          <listitem>
+              <para>To keep conversations syncronized while using multiple
+              devices at the same time.</para>
+
+              <para>This will be included by default in prosody 0.10, and you
+              can get it from the community modules for prosody 0.9</para>
+          </listitem>
+      </varlistentry>
+      <varlistentry>
+          <term><code>mod_privacy</code> + <code>mod_blocking</code> 
+          (XEP-0191)</term>
+          <listitem>
+              <para>To allow user-controlled blocking of users, including as
+              anti-spim measure.</para>
+
+              <para><code>mod_blocking</code> is available from the community
+              modules. In prosody 0.10 these two modules will be replaced by
+              <code>mod_privacy</code></para>
+          </listitem>
+      </varlistentry>
+      <varlistentry>
+          <term><code>mod_smacks</code> (XEP-0198)</term>
+          <listitem>
+              <para>Allow clients to resume a disconnected session before a
+              customizable timeout and prevent message loss.</para>
+          </listitem>
+      </varlistentry>
+      <varlistentry>
+          <term><code>mod_mam</code> (XEP-0313)</term>
+          <listitem>
+              <para>Archive messages on the server for a limited period of time
+              (default 1 week) and allow clients to retrieve them; this is
+              required to syncronize message history between multiple
+              clients.</para>
+
+              <para>With prosody 0.9 only an in-memory storage backend is
+              available, which may make this module problematic on servers
+              with many users.
+              prosody 0.10 will fix this by adding support for an SQL
+              backed storage with archiving capabilities.</para>
+          </listitem>
+      </varlistentry>
+      <varlistentry>
+          <term><code>mod_throttle_presence</code> +
+          <code>mod_filter_chatstates</code> (XEP-0352)</term>
+          <listitem>
+              <para>Filter out presence updates and chat states when the client
+              announces (via Client State Indication) that the user isn't
+              looking.
+              This is useful to reduce power and bandwidth usage for
+              "useless" traffic.</para>
+          </listitem>
+      </varlistentry>
+      <varlistentry>
+          <term><code>mod_http_upload</code>(XEP-0363)</term>
+          <listitem>
+              <para>To allow rich media transfers by uploading the files to the
+              server and serving them via HTTP.</para>
+          </listitem>
+      </varlistentry>
+  </variablelist>
+
+
       <para>Once configuration is complete, restart the daemon as
       demonstrated in <xref linkend="prosody-restart"/>.</para>
 
